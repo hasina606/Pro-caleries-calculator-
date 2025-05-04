@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calories Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #b2bec3, #0984e3);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      max-width: 400px;
+      width: 100%;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+    h2 {
+      text-align: center;
+      background-color: #0984e3;
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    label {
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .gender {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+    .submit-btn {
+      background-color: #00b894;
+      color: white;
+      font-weight: bold;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .results {
+      margin-top: 20px;
+    }
+    .result-box {
+      background-color: #f1f2f6;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+    .recalculate-btn {
+      background-color: #0984e3;
+      color: white;
+      font-weight: bold;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>CALORIES CALCULATOR</h2>
+    <label>WEIGHT</label>
+    <input type="number" id="weight" placeholder="Enter weight in kg">
+
+    <label>HEIGHT</label>
+    <input type="number" id="height" placeholder="Enter height in cm">
+
+    <label>AGE</label>
+    <input type="number" id="age" placeholder="Enter age">
+
+    <div class="gender">
+      <label><input type="radio" name="gender" value="male" checked> MALE</label>
+      <label><input type="radio" name="gender" value="female"> FEMALE</label>
+    </div>
+
+    <label>EXERCISE</label>
+    <select id="activity">
+      <option value="1.2">Sedentary (little or no exercise)</option>
+      <option value="1.375">Light (exercise 1–3 days/week)</option>
+      <option value="1.55">Moderate (exercise 3–5 days/week)</option>
+      <option value="1.725">Very active (6–7 days/week)</option>
+      <option value="1.9">Extra active (hard exercise 2x/day)</option>
+    </select>
+
+    <button class="submit-btn" onclick="calculateCalories()">SUBMIT</button>
+
+    <div class="results" id="results"></div>
+
+    <button class="recalculate-btn" onclick="resetForm()">Recalculate</button>
+  </div>
+
+  <script>
+    function calculateCalories() {
+      const weight = parseFloat(document.getElementById('weight').value);
+      const height = parseFloat(document.getElementById('height').value);
+      const age = parseFloat(document.getElementById('age').value);
+      const gender = document.querySelector('input[name="gender"]:checked').value;
+      const activity = parseFloat(document.getElementById('activity').value);
+
+      if (isNaN(weight) || isNaN(height) || isNaN(age)) {
+        alert("Please enter valid values.");
+        return;
+      }
+
+      let bmr;
+      if (gender === "male") {
+        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+      } else {
+        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+      }
+
+      const maintenance = Math.round(bmr * activity);
+      const weightLoss = maintenance - 500;
+      const weightGain = maintenance + 500;
+
+      const protein = Math.round((maintenance * 0.3) / 4);
+      const carbs = Math.round((maintenance * 0.45) / 4);
+      const fats = Math.round((maintenance * 0.25) / 9);
+
+      const results = `
+        <div class="result-box"><strong>Maintenance Calories:</strong> ${maintenance} calories/day</div>
+        <div class="result-box"><strong>Basal Metabolic Rate:</strong> ${Math.round(bmr)} calories/day</div>
+        <div class="result-box"><strong>Weight Loss:</strong> ${weightLoss} calories/day</div>
+        <div class="result-box"><strong>Weight Gain:</strong> ${weightGain} calories/day</div>
+        <div class="result-box">
+          <strong>Recommended Macronutrients:</strong><br>
+          Protein: ${protein}g (30%)<br>
+          Carbs: ${carbs}g (45%)<br>
+          Fats: ${fats}g (25%)
+        </div>
+      `;
+
+      document.getElementById('results').innerHTML = results;
+    }
+
+    function resetForm() {
+      document.getElementById('weight').value = '';
+      document.getElementById('height').value = '';
+      document.getElementById('age').value = '';
+      document.getElementById('activity').selectedIndex = 0;
+      document.getElementById('results').innerHTML = '';
+    }
+  </script>
+</body>
+</html>
